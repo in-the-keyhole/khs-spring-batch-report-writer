@@ -1,0 +1,24 @@
+Spring Batch Report Writing Framework
+
+Use with Spring Batch framework to generate PDF reports 
+
+Features 
+
+Mutiple Totals and Subtotals
+Format Headings/Footings
+Easy to apply report Layout
+
+Usage  
+
+Define a chunk tasklet Step in a Batch config file...
+
+  Reader - Reader reads data source into a report rows List<Data> 
+
+  Processor - reference com.khs.batch.report.ReportProcessor with referenc to your ReportFactory(defines columns, layout, grouping, etc)
+
+  Writer -  Define PDF  com.khs.batch.report.ReportPDFWriter and specify output path as a property 
+
+
+Working Example  
+
+Project includes unit test batch project that generates example report(s). Pull maven project structure from repo and run unit tets.  Just modiy the batch.properties file to define location where PDF's are generated.
