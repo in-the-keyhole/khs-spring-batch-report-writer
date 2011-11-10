@@ -1,24 +1,84 @@
-Spring Batch Report Writing Framework
+# Spring Batch Report Writing Framework #
 
-Use with Spring Batch framework to generate PDF reports 
+This project enables report PDF report generation using the Spring Batch FrameworkUse with Spring Batch framework
 
-Features 
+## Getting Started ##
 
-Mutiple Totals and Subtotals
-Format Headings/Footings
-Easy to apply report Layout
+To build it clone then use Maven:
 
-Usage  
+	$ git clone ...
+	$ cd khs-spring-batch-report-writer
+	$ mvn install
 
-Define a chunk tasklet Step in a Batch config file...
+Using Maven: add this dependency in your 'pom.xml'
 
-  Reader - Reader reads data source into a report rows List<Data> 
+   <dependency>
+   			<groupId>com.keyholesoftware.com</groupId>
+   			<artifactId>khs-spring-batch-reporting</artifactId>
+   			<version>0.0.1-SNAPSHOT<version>
+   </dependency>
+   
+Sample job that generate PDF(s) can be found in unit test folder
 
-  Processor - reference com.khs.batch.report.ReportProcessor with referenc to your ReportFactory(defines columns, layout, grouping, etc)
+## Features ##    
+   
+  Grouping, Totaling,and Subtotaling
+  Format Headings, Footings, Columns
+  Implements as a Spring batch Writer 
+  Process very large result sets
+  Outputs PDF file 
+  
+  
+ # Example Job report step definition #
+  
+    <step id="reportStep" parent="simpleStep">
+			<tasklet>
+				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
+			</tasklet>						
+	</step>		 
+  
+  Report Reader Read - Timesheet Data  
+  
+    <bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader"/>     
 
-  Writer -  Define PDF  com.khs.batch.report.ReportPDFWriter and specify output path as a property 
+  Report Processor
+  
+     <bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
+	   <property name="factory" ref="exampleReportFactory" />
+	</bean>
 
-
-Working Example  
-
-Project includes unit test batch project that generates example report(s). Pull maven project structure from repo and run unit tets.  Just modiy the batch.properties file to define location where PDF's are generated.
+    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory">
+    </bean>
+  
+  PDF Writer 
+  
+    <bean id="reportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
+         <property name="path" value="${batch.report.output.path}"/>  
+         <property name="width" value="60"/> 
+         <property name="headingWidth" value="60" />
+	</bean>  
+   
+  
+## How it Works ##
+  
+  Report Reader turns data result into report row objects List<Data> 
+  
+  Frameworks Report Processor groups, totals, etc... 
+  
+  PDW Writer formats processor output into PDF file
+  
+  
+  
+  
+  
+  
+  Implement Report Reader that feeds Processor
+  
+   
+ 
+    
+   
+   
+   
+   
+ 
