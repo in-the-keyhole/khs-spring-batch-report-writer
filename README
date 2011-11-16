@@ -1,9 +1,10 @@
-# Spring Batch Report Writing Framework #
+Spring Batch Report Writing Framework
+=====================================
 
 This project enables report PDF report generation using the Spring Batch FrameworkUse with Spring Batch framework
 
-## Getting Started ##
-
+Getting Started
+================
 To build it clone then use Maven:
 
 	$ git clone ...
@@ -13,15 +14,15 @@ To build it clone then use Maven:
 Using Maven: add this dependency in your 'pom.xml'
 
    <dependency>
-   			<groupId>com.keyholesoftware.com</groupId>
-   			<artifactId>khs-spring-batch-reporting</artifactId>
-   			<version>0.0.1-SNAPSHOT<version>
+   	<groupId>com.keyholesoftware.com</groupId>
+   	<artifactId>khs-spring-batch-reporting</artifactId>
+   	<version>0.0.1-SNAPSHOT<version>
    </dependency>
    
-Sample job that generate PDF(s) can be found in unit test folder
+Sample job that generate PDF(s) can be found in UNIT TEST folder
 
-## Features ##    
-   
+Features   
+=========   
   Grouping, Totaling,and Subtotaling
   Format Headings, Footings, Columns
   Implements as a Spring batch Writer 
@@ -29,13 +30,14 @@ Sample job that generate PDF(s) can be found in unit test folder
   Outputs PDF file 
   
   
- # Example Job report step definition #
+Example Job report step definition 
+===============================================
   
     <step id="reportStep" parent="simpleStep">
-			<tasklet>
-				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
-			</tasklet>						
-	</step>		 
+	<tasklet>
+		<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
+	</tasklet>						
+    </step>		 
   
   Report Reader Read - Timesheet Data  
   
@@ -59,7 +61,8 @@ Sample job that generate PDF(s) can be found in unit test folder
 	</bean>  
    
   
-## How it Works ##
+How it Works
+============
   
   Report Reader turns data result into report row objects List<Data> 
   
