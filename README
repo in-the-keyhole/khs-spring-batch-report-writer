@@ -39,11 +39,11 @@ Example Job report step definition
 	</tasklet>						
     </step>		 
   
-  Report Reader Read - Timesheet Data  
+  Report Reader Read - Read Timesheet Data 
   
     <bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader"/>     
 
-  Report Processor
+  Report Processor - Specify report factory (factory defines headings/columns/totals.etc)
   
      <bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
 	   <property name="factory" ref="exampleReportFactory" />
@@ -52,7 +52,7 @@ Example Job report step definition
     <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory">
     </bean>
   
-  PDF Writer 
+  PDF Writer - Define PDF attributes and report output path
   
     <bean id="reportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
          <property name="path" value="${batch.report.output.path}"/>  
@@ -64,19 +64,72 @@ Example Job report step definition
 How it Works
 ============
   
-  Report Reader turns data result into report row objects List<Data> 
+  Reader
+  Report Reader turns data result into report row objects List<Data>. 
+  You implement retrieval query along with a Report Factory for report layout
   
+  Processing
   Frameworks Report Processor groups, totals, etc... 
   
+  Writing
   PDW Writer formats processor output into PDF file
   
-  
-  
-  
-  
-  
-  Implement Report Reader that feeds Processor
-  
+Report Factory
+==============
+A report layout is defined by extended from com.khs.batch.report.ReportFactory. 
+Factories define your report layout
+An example is shown below... 
+
+
+/**
+ * Example Timesheet report format (i.e. columns,headings, footings, groupings, totaling, etc..)
+ * @author dpitt  www.keyholesoftware.com
+ *
+ */
+public class ExampleTimesheetReportFactory extends ReportFactory {
+
+	// column ids
+
+	public final static String WEEKEND = "weekend";
+	public final static String DEPARTMENT = "department";
+	public final static String EMPLOYEE = "employee";
+	public final static String HOURS = "hours";
+
+
+	@Override
+	public String[] getHeader() {
+
+		return new String[] { "Example Report",
+				"~Example Timesheet Report~Page #" };
+	}
+
+	@Override
+	public List<Column> getColumns() {
+
+		List<Column> cols = new ArrayList<Column>();
+		cols.add( Column.New(WEEKEND, "Weekend") );
+	
+		// group on department
+		cols.add( Column.NewGroup(DEPARTMENT,"Department") );
+		
+		cols.add( Column.New(EMPLOYEE, "Employee" ) );
+		
+		// total on hours
+		cols.add( Column.NewTotal(HOURS,"Hours") );
+
+		return cols;
+	}
+
+	@Override
+	public String[] getFooter() {
+
+		return new String[] { "~Footer for " };
+
+	}
+
+}
+
+   
    
  
     
