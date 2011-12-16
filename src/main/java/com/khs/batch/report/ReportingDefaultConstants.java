@@ -23,7 +23,7 @@ public class ReportingDefaultConstants {
 	public static String DATE_FORMAT = "mm-dd-yyyy";
 	public static String TIME_FORMAT = "mm:hh";
 	public static String EMPTY_REPORT = "EMPTY_REPORT";
-	public static String DEFAULT_PATH = "file:/users/dpitt/";
+	public static String DEFAULT_PATH = null;
 	public static String FILE_NAME = "batch-report";
 	public static int DEFAULT_BODY_WIDTH_PERCENT = 90;
 	public static int DEFAULT_HEADING_WIDTH_PERCENT = 100;

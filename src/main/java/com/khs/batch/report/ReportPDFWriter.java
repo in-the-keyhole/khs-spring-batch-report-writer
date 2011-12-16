@@ -493,6 +493,10 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 			// COURIER is monospaced font
 			font = new Font(Font.COURIER, fontSize, Font.NORMAL);
 			document = new Document(PageSize.A4.rotate(), 20, 20, 20, 20);
+			// assert path
+			if (path == null) {
+				throw new RuntimeException("ReportPDFWriter path property cannot be NULL, must be set to a valid file:// uri path");
+			}
 
 			PdfWriter.getInstance(document, new FileOutputStream(new File(new URI(path + fileName()))));
 			document.open();
