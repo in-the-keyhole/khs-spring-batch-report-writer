@@ -26,9 +26,9 @@ public abstract class ReportFactory {
 
 	public abstract List<Column> getColumns();
 
-	public abstract String[] getFooter();
+	public abstract List<String> getFooter();
 
-	public abstract String[] getHeader();
+	public abstract List<String> getHeader();
 
 	/**
 	 * @return the jobParams

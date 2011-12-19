@@ -325,7 +325,7 @@ public class ReportProcessor implements ItemProcessor<List<Data>, List<String[]>
 
 	/**
 	 * Determine if page break is required for lines that are going to be output. return true if page break output
-	 * 
+	 *
 	 * @param lines
 	 *            that are going to be output
 	 */
@@ -367,7 +367,7 @@ public class ReportProcessor implements ItemProcessor<List<Data>, List<String[]>
 
 	private void writeColumnHeaders() {
 
-		String[] headers = factory.getHeader();
+		List<String> headers = factory.getHeader();
 		for (String h : headers) {
 			writeHeader(h);
 			currentLines++;
@@ -389,7 +389,7 @@ public class ReportProcessor implements ItemProcessor<List<Data>, List<String[]>
 
 	private void writePageFooters() {
 		currentLines++;
-		String[] footers = factory.getFooter();
+		List<String> footers = factory.getFooter();
 		if (footers != null) {
 			for (String h : footers) {
 				writeFooter(h);
