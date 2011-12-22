@@ -16,8 +16,8 @@
 
 package com.khs.batch.report;
 
-import java.math.BigDecimal;
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * @author dpitt@keyholesoftware.com
@@ -25,24 +25,10 @@ import java.text.NumberFormat;
 
 public class Column {
 
+    public enum Alignment {LEFT, CENTER, RIGHT};
+    
 	public static Column New(String id, String title) {
-		return new Column(id, title, false, false, false);
-	}
-
-	public static Column New(String id, String title, boolean group, boolean total, boolean numeric) {
-		return new Column(id, title, group, total, numeric);
-	}
-
-	public static Column NewGroup(String id, String title) {
-		return new Column(id, title, true, false, false);
-	}
-
-	public static Column NewNumeric(String id, String title) {
-		return new Column(id, title, false, false, true);
-	}
-
-	public static Column NewTotal(String id, String title) {
-		return new Column(id, title, false, true, true);
+		return new Column(id, title);
 	}
 
 	private String id;
@@ -50,40 +36,81 @@ public class Column {
 	private boolean total;
 	private boolean group;
 	private boolean number;
-	private String format;
-	private int precision = 2;
+	private boolean date;
 
+	private DecimalFormat decimalFormat;
+    private SimpleDateFormat dateFormat;
+    
 	public Column() {
 		super();
 	}
 
-	public Column(String id, String title, boolean group, boolean total, boolean numeric) {
+	public Column(String id, String title) {
 		super();
-		setId(id);
-		setTitle(title);
-		setGroup(group);
-		setTotal(total);
-		setNumber(numeric);
+		this.id = id;
+		this.title = title;
 	}
 
-	public String format(Object o) {
-
-		if (isTotal() || isNumber()) {
-			BigDecimal amount = new BigDecimal("" + o);
-			NumberFormat n = NumberFormat.getNumberInstance();
-			n.setMinimumFractionDigits(precision);
-			n.setMaximumFractionDigits(precision);
-			double damount = amount.doubleValue();
-			return n.format(damount);
-		}
-
-		return "" + o;
+	public Column date() {
+        date = true;
+        dateFormat = new SimpleDateFormat(ReportingDefaultConstants.DATE_FORMAT);
+        
+        return this;
+    }
+    
+    public Column date(String formatPattern) {
+        date = true;
+        dateFormat = new SimpleDateFormat(formatPattern);
+        
+        return this;
+    }
+    
+	public String format(Object objToFormat) {
+	    if (isNumber())
+        {
+            return decimalFormat.format(objToFormat);
+        }
+        
+        if (isDate())
+        {
+            return dateFormat.format(objToFormat);
+        }
+        
+        return objToFormat.toString();
 	}
+	
+	public Column group() {
+        this.group = true;
+        
+        return this;
+    }
 
-	public String getFormat() {
-		return format;
-	}
+	public Column numeric() {
+        this.number = true;
+        decimalFormat = new DecimalFormat(ReportingDefaultConstants.DECIMAL_FORMAT);
+        
+        return this;
+    }
+	
+	public Column numeric(String formatPattern) {
+        this.number = true;
+        decimalFormat = new DecimalFormat(formatPattern);
+        
+        return this;
+    }
+	
+	public Column total() {
+        this.total = true;
+        
+        return numeric();
+    }
 
+	public Column total(String formatPattern) {
+        this.total = true;
+        
+        return numeric(formatPattern);
+    }
+	
 	public String getId() {
 		return id;
 	}
@@ -92,6 +119,11 @@ public class Column {
 		return title;
 	}
 
+	public boolean isDate()
+    {
+        return date;
+    }
+	
 	public boolean isGroup() {
 		return group;
 	}
@@ -102,35 +134,6 @@ public class Column {
 
 	public boolean isTotal() {
 		return total;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-	public void setGroup(boolean group) {
-		this.group = group;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setNumber(boolean number) {
-		this.number = number;
-	}
-
-	public Column setPrecision(int precision) {
-		this.precision = precision;
-		return this;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public void setTotal(boolean total) {
-		this.total = total;
 	}
 
 }

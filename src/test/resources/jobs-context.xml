@@ -18,38 +18,36 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		skeleton for a typical batch reporting application.</description>
 
 	<job id="job1" xmlns="http://www.springframework.org/schema/batch">
-		<step id="step1" parent="simpleStep">
-			<tasklet>
-				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
+		<step id="step1">
+			<tasklet transaction-manager="transactionManager" start-limit="100">
+				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1" />
 			</tasklet>						
 		</step>		 
 	</job>
 
 	<!-- Configuration for step1 -->
-	<bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader">     
-	</bean>
+	<bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader" />     
 
 	<bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
 	   <property name="factory" ref="exampleReportFactory" />
 	</bean>
 
-    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory">
-    </bean>
-
+    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory" />
+ 
      <bean id="reportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
-         <property name="path" value="${batch.report.output.path}"/> 
+         <property name="resource" value="file:/${java.io.tmpdir}/batch-report.pdf" />  
          <property name="width" value="60"/> 
          <property name="headingWidth" value="60" />
+         <property name="reportingMetaData" ref="metaData" />
 	</bean>
      
-	<bean id="simpleStep"
-		class="org.springframework.batch.core.step.item.SimpleStepFactoryBean"
-		abstract="true">
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="jobRepository" ref="jobRepository" />
-		<property name="startLimit" value="100" />
+	<bean id="metaData"  class="com.khs.batch.report.ReportingMetaData">
+		<property name="author" value="KHS" />
+		<property name="subject" value="PDF Reporting" />
+		<property name="keywords" value="Spring, Spring Batch, PDF Report" />
+		<property name="creator" value="KHS Batch" />
+		<property name="title" value="PDF Batch Report" />
 	</bean>
-
 	
 	<!-- M E S S A G E   F I L E S  -->
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -57,6 +55,5 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			<list><value>messages</value></list>
 		</property>
 	</bean>
-
 
 </beans>

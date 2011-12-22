@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 public class Total {
 
 	private String id;
-	private BigDecimal total = new BigDecimal(0.0);
+	private BigDecimal total = BigDecimal.ZERO;
 
 	public void add(BigDecimal bd) {
 		setTotal(getTotal().add(bd));
