@@ -33,6 +33,10 @@ public class ReportTest {
 	@Test
 	public void testLaunchJob() throws Exception {
 		jobLauncher.run(job, new JobParameters());
+		// PDF generated to resource file path specified in jobs-context.xml
+		System.out.println("PDF REPORT Generated in " + System.getProperty("java.io.tmpdir"));
+		System.out.println("See src/test/resources/jobs-context.xml to change PDF output directory");
+
 	}
 
 }
