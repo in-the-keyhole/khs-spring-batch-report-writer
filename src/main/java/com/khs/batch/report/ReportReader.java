@@ -54,13 +54,6 @@ public abstract class ReportReader<T> implements ItemReader<List<? extends Data>
 	}
 
 	/**
-	 * @return the jobParams
-	 */
-	public Object getJobParams() {
-		return stepExecution.getJobExecution().getExecutionContext().get("jobParams");
-	}
-
-	/**
 	 * @return the queryResults
 	 */
 	public List<T> getQueryResults() {
