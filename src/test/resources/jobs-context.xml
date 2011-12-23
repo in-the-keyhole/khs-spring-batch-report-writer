@@ -58,3 +58,63 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	</bean>
 
 </beans>
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+http://www.springframework.org/schema/aop 	http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+http://www.springframework.org/schema/tx 	http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<description>Example job to get you started. It provides a
+		skeleton for a typical batch reporting application.</description>
+
+	<job id="job1" xmlns="http://www.springframework.org/schema/batch">
+		<step id="step1">
+			<tasklet transaction-manager="transactionManager" start-limit="100">
+				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1" />
+			</tasklet>						
+		</step>		 
+	</job>
+
+	<!-- Configuration for step1 -->
+	<bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader" />     
+
+	<bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
+	   <property name="factory" ref="exampleReportFactory" />
+	</bean>
+
+    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory" />
+ 
+     <bean id="reportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
+         <property name="resource" value="file:/${java.io.tmpdir}/batch-report.pdf" />  
+         <property name="width" value="60"/> 
+         <property name="headingWidth" value="60" />
+         <property name="reportingMetaData" ref="metaData" />
+	</bean>
+     
+	<bean id="metaData"  class="com.khs.batch.report.ReportingMetaData">
+		<property name="author" value="KHS" />
+		<property name="subject" value="PDF Reporting" />
+		<property name="keywords" value="Spring, Spring Batch, PDF Report" />
+		<property name="creator" value="KHS Batch" />
+		<property name="title" value="PDF Batch Report" />
+	</bean>
+	
+	<!-- M E S S A G E   F I L E S  -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list><value>messages</value></list>
+		</property>
+	</bean>
+
+</beans>
+
