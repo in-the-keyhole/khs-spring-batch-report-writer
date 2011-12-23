@@ -33,31 +33,41 @@ Features
 Example Job report step definition 
 ===============================================
   
-    <step id="reportStep" parent="simpleStep">
-	<tasklet>
-		<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
-	</tasklet>						
-    </step>		 
+    <job id="job1" xmlns="http://www.springframework.org/schema/batch">
+		<step id="step1" parent="simpleStep">
+			<tasklet>
+				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
+			</tasklet>						
+		</step>		 
+	</job>	 
   
   Report Reader Read - Read Timesheet Data 
   
-    <bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader"/>     
+    <bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader" />     
 
   Report Processor - Specify report factory (factory defines headings/columns/totals.etc)
   
-     <bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
+    <bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
 	   <property name="factory" ref="exampleReportFactory" />
 	</bean>
 
-    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory">
-    </bean>
+    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory" />
   
   PDF Writer - Define PDF attributes and report output path
   
     <bean id="reportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
-         <property name="path" value="${batch.report.output.path}"/>  
+         <property name="resource" value="file:/${java.io.tmpdir}/batch-report.pdf" />  
          <property name="width" value="60"/> 
          <property name="headingWidth" value="60" />
+         <property name="reportingMetaData" ref="metaData" />
+	</bean>
+	
+	<bean id="metaData"  class="com.khs.batch.report.ReportingMetaData">
+		<property name="author" value="KHS" />
+		<property name="subject" value="PDF Reporting" />
+		<property name="keywords" value="Spring, Spring Batch, PDF Report" />
+		<property name="creator" value="KHS Batch" />
+		<property name="title" value="PDF Batch Report" />
 	</bean>  
    
   
@@ -110,12 +120,12 @@ public class ExampleTimesheetReportFactory extends ReportFactory {
 		cols.add( Column.New(WEEKEND, "Weekend") );
 	
 		// group on department
-		cols.add( Column.NewGroup(DEPARTMENT,"Department") );
+		cols.add( Column.New(DEPARTMENT,"Department").group() );
 		
 		cols.add( Column.New(EMPLOYEE, "Employee" ) );
 		
 		// total on hours
-		cols.add( Column.NewTotal(HOURS,"Hours") );
+		cols.add( Column.New(HOURS,"Hours").total() );
 
 		return cols;
 	}
