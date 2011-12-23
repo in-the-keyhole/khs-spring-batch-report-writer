@@ -29,7 +29,7 @@ public class ExampleTimesheetReportFactory extends ReportFactory {
 	// Column.NewTotal(<col id>,<col value>)
 	// Column.NewNumeric(<col id>,<col value>)
 	public List<Column> getColumns() {
-		return Arrays.asList(Column.New(WEEKEND, "Weekend"), Column.NewGroup(DEPARTMENT, "Department"), Column.New(EMPLOYEE, "Employee"), Column.NewTotal(HOURS, "Hours"));
+		return Arrays.asList(Column.New(WEEKEND, "Weekend"), Column.New(DEPARTMENT, "Department").group(), Column.New(EMPLOYEE, "Employee"), Column.New(HOURS, "Hours").total());
 	}
 
 	@Override

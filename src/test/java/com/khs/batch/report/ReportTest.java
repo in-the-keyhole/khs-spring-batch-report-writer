@@ -33,6 +33,8 @@ public class ReportTest {
 	@Test
 	public void testLaunchJob() throws Exception {
 		jobLauncher.run(job, new JobParameters());
+		System.out.println("PDF REPORT Generated in " + System.getProperty("java.io.tmpdir"));
+
 	}
 
 }

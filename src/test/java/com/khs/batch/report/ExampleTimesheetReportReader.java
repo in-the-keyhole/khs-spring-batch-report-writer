@@ -30,7 +30,7 @@ public class ExampleTimesheetReportReader extends ReportReader {
 
 			Data d = new Data();
 			d.setId(WEEKEND);
-			d.setValue("06/30/20");
+			d.setValue("06/30/2011");
 
 			cols.add(d);
 
