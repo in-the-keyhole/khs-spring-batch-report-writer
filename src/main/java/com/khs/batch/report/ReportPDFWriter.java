@@ -15,13 +15,11 @@
  */
 package com.khs.batch.report;
 
-import java.io.File;
 import java.io.FileOutputStream;
-import java.net.URI;
-import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 
 import com.lowagie.text.Document;
@@ -50,71 +48,30 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 	private static String LEFT = "S";
 	private static String RIGHT = "N";
 
-	private void addMetaData(Document document) {
-		document.addTitle(metaTitle);
-		document.addSubject(metaSubject);
-		document.addKeywords(metaKeywords);
-		document.addAuthor(metaAuthor);
-		document.addCreator(metaCreator);
-	}
+	private ReportingMetaData reportingMetaData;
+    
+    private int[] colWidths;
+    private int fontSize = ReportingDefaultConstants.DEFAULT_FONT_SIZE;
+    private Document document;
+    private PdfPTable detailTable;
+    private PdfPTable footerTable;
+    private Font font;
+    private int width = ReportingDefaultConstants.DEFAULT_BODY_WIDTH_PERCENT;
+    private int headingWidth = ReportingDefaultConstants.DEFAULT_HEADING_WIDTH_PERCENT;
+    private Resource resource;
 
-	private int[] colWidths;
-	private String path = ReportingDefaultConstants.DEFAULT_PATH;
-	private String name = ReportingDefaultConstants.FILE_NAME;
-	private int fontSize = 8;
-	private Document document = null;
-	private PdfPTable detailTable = null;
-	private PdfPTable footerTable = null;
-	private Font font = null;
-	private int width = ReportingDefaultConstants.DEFAULT_BODY_WIDTH_PERCENT;
-	private int headingWidth = ReportingDefaultConstants.DEFAULT_HEADING_WIDTH_PERCENT;
-	private String fileName = null;
-	private String metaTitle = ReportingDefaultConstants.META_DATA_TITLE;
-	private String metaSubject = ReportingDefaultConstants.META_DATA_SUBJECT;
-	private String metaKeywords = ReportingDefaultConstants.META_DATA_KEYWORDS;
-	private String metaAuthor = ReportingDefaultConstants.META_DATA_AUTHOR;
-	private String metaCreator = ReportingDefaultConstants.META_DATA_CREATOR;
-
-	public String getMetaTitle() {
-		return metaTitle;
-	}
-
-	public void setMetaTitle(String metaTitle) {
-		this.metaTitle = metaTitle;
-	}
-
-	public String getMetaSubject() {
-		return metaSubject;
-	}
-
-	public void setMetaSubject(String metaSubject) {
-		this.metaSubject = metaSubject;
-	}
-
-	public String getMetaKeywords() {
-		return metaKeywords;
-	}
-
-	public void setMetaKeywords(String metaKeywords) {
-		this.metaKeywords = metaKeywords;
-	}
-
-	public String getMetaAuthor() {
-		return metaAuthor;
-	}
-
-	public void setMetaAuthor(String metaAuthor) {
-		this.metaAuthor = metaAuthor;
-	}
-
-	public String getMetaCreator() {
-		return metaCreator;
-	}
-
-	public void setMetaCreator(String metaCreator) {
-		this.metaCreator = metaCreator;
-	}
-
+    private void addMetaData(Document document)
+    {
+        if (reportingMetaData != null)
+        {
+            document.addTitle(reportingMetaData.getTitle());
+            document.addSubject(reportingMetaData.getSubject());
+            document.addKeywords(reportingMetaData.getKeywords());
+            document.addAuthor(reportingMetaData.getAuthor());
+            document.addCreator(reportingMetaData.getCreator());
+        }
+    }
+    
 	/**
 	 * @return the colWidths
 	 */
@@ -131,14 +88,6 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 
 	public int getHeadingWidth() {
 		return headingWidth;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getPath() {
-		return path;
 	}
 
 	public int getWidth() {
@@ -175,20 +124,11 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 		this.headingWidth = headingWidth;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 	public void setWidth(int width) {
 		this.width = width;
 	}
 
 	public void write(List<? extends List<String[]>> line) {
-		// TODO Auto-generated method stub
 
 		for (List<String[]> l : line) {
 
@@ -475,38 +415,23 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 		detailTable = null;
 		footerTable = null;
 		document = null;
-
-	}
-
-	private String fileName() {
-		Calendar cal = Calendar.getInstance();
-		String dateTime = cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DATE) + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + cal.get(Calendar.MINUTE);
-		String extension = ".pdf";
-		this.fileName = name + "-" + dateTime + extension;
-		return this.fileName;
 	}
 
 	private void init() {
-
-		try {
-
-			// COURIER is monospaced font
-			font = new Font(Font.COURIER, fontSize, Font.NORMAL);
-			document = new Document(PageSize.A4.rotate(), 20, 20, 20, 20);
-			// assert path
-			if (path == null) {
-				throw new RuntimeException("ReportPDFWriter path property cannot be NULL, must be set to a valid file:// uri path");
-			}
-
-			PdfWriter.getInstance(document, new FileOutputStream(new File(new URI(path + fileName()))));
-			document.open();
-			addMetaData(document);
-		} catch (Exception e) {
-			document = null;
-			throw new RuntimeException("Error creating batch report " + this.path + this.fileName + "-" + e);
-		}
-
-	}
+        try {
+            // COURIER is monospaced font
+            font = new Font(Font.COURIER, fontSize, Font.NORMAL);
+            document = new Document(PageSize.A4.rotate(), 20, 20, 20, 20);   
+            
+            PdfWriter.getInstance(document, new FileOutputStream(resource.getFile()));
+            document.open();
+            addMetaData(document);
+        }
+        catch (Exception e) {
+            document = null;
+            throw new RuntimeException("Error creating batch report " + resource.getFilename(), e);
+        }
+    }
 
 	private String line(String value, String type) {
 
@@ -561,5 +486,33 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 		String[] result = parse(value);
 		return result[1];
 	}
+
+    /**
+     * @return the resource
+     */
+    public Resource getResource() {
+        return resource;
+    }
+
+    /**
+     * @param resource the resource to set
+     */
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    /**
+     * @return the reportingMetaData
+     */
+    public ReportingMetaData getReportingMetaData() {
+        return reportingMetaData;
+    }
+
+    /**
+     * @param reportingMetaData the reportingMetaData to set
+     */
+    public void setReportingMetaData(ReportingMetaData reportingMetaData) {
+        this.reportingMetaData = reportingMetaData;
+    }
 
 }

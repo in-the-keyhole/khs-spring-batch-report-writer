@@ -231,7 +231,7 @@ public class ReportProcessor implements ItemProcessor<List<Data>, List<String[]>
 			// grand total
 			if (col.isTotal()) {
 				Total total = findTotal(col.getId());
-				total.add(new BigDecimal("" + d.getValue()));
+				total.add(new BigDecimal(d.getValue().toString()));
 			}
 
 		}
@@ -265,8 +265,8 @@ public class ReportProcessor implements ItemProcessor<List<Data>, List<String[]>
 		started = false;
 		currentPage = 1;
 		// subTotals = new ArrayList<SubTotal>();
-		totals = new ArrayList<Total>();
-		controlBreaks = new ArrayList<ControlBreak>();
+		totals.clear();
+		controlBreaks.clear();
 		newPage = false;
 	}
 
@@ -361,7 +361,7 @@ public class ReportProcessor implements ItemProcessor<List<Data>, List<String[]>
 	private void updateSubTotalValues(Data d, Column col) {
 		for (ControlBreak cb : controlBreaks) {
 			SubTotal total = cb.findSubTotal(col.getId());
-			total.add(new BigDecimal("" + d.getValue()));
+			total.add(new BigDecimal(d.getValue().toString()));
 		}
 	}
 
