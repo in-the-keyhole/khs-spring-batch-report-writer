@@ -25,9 +25,8 @@ public class ExampleTimesheetReportFactory extends ReportFactory {
 
 	@Override
 	// Report Columns Column definitions options...
-	// Column.NewGroup(<col id>,<col value>)
-	// Column.NewTotal(<col id>,<col value>)
-	// Column.NewNumeric(<col id>,<col value>)
+	// Column.New(<col id>,<col value>).group()
+	// Column.New(<col id>,<col value>).total()
 	public List<Column> getColumns() {
 		return Arrays.asList(Column.New(WEEKEND, "Weekend"), Column.New(DEPARTMENT, "Department").group(), Column.New(EMPLOYEE, "Employee"), Column.New(HOURS, "Hours").total());
 	}
