@@ -1,12 +1,13 @@
 Spring Batch Report Writing Framework
 =====================================
 
-This project enables report PDF report generation using the Spring Batch FrameworkUse with Spring Batch framework
+This project enables the creation of PDF line break reports using the Spring Batch FrameworkUse with Spring Batch framework
 
-When to Use?
-============
-Create line break reports with grouping, and totaling. This framework approach originated and has been applied in 
-as a way to produce financial accounting audit and reconciliation reports. 
+What it does
+=============
+Through spring batch chunk tasklet configuration you can define a line break report and specify columns to group and total on. 
+Multiple control breaks can be defined along with header and footers. Report is output to a PDF at a specified resource 
+path.  This framework approach originated and has been used to produce financial accounting, audit and reconciliation reports. 
 
 Getting Started
 ================
@@ -118,6 +119,7 @@ public class ExampleTimesheetReportFactory extends ReportFactory {
 	// Report Header List
 	// Each element in list is a header line
 	// ~ is used to justify header text LEFT,CENTER,RIGHT
+	// # indicates page number
 	public List<String> getHeader() {
 		return Arrays.asList("Example Report", "~Example Timesheet Report~Page #");
 	}
