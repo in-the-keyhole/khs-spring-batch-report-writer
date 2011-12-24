@@ -18,8 +18,11 @@ package com.khs.batch.report;
 import java.io.FileOutputStream;
 import java.util.List;
 
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemStreamException;
+import org.springframework.batch.item.file.ResourceAwareItemWriterItemStream;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.lowagie.text.Document;
@@ -36,7 +39,7 @@ import com.lowagie.text.pdf.PdfWriter;
 /**
  * @author dpitt@keyholesoftware.com
  */
-public class ReportPDFWriter implements ItemWriter<List<String[]>> {
+public class ReportPDFWriter implements ResourceAwareItemWriterItemStream<List<String[]>> {
 
 	private final static String SINGLE_LINE = "-";
 	private final static String DOUBLE_LINE = "=";
@@ -135,9 +138,9 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 			for (String[] elements : l) {
 				try {
 
-					if (document == null) {
+					/*if (document == null) {
 						init();
-					}
+					}*/
 
 					String directive = elements[0];
 					String[] reportData = removeDirective(elements);
@@ -169,18 +172,17 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 						newPage();
 					}
 
-					if (elements[0].equals(ReportProcessor.EOF)) {
+					/*if (elements[0].equals(ReportProcessor.EOF)) {
 						endFile();
 						return;
-					}
+					}*/
 
 				} catch (DocumentException e) {
-					e.printStackTrace();
 					document.close();
 					detailTable = null;
 					footerTable = null;
 					document = null;
-					throw new RuntimeException(e.getMessage());
+					throw new RuntimeException("Error writing batch report " + resource.getFilename(), e);
 				}
 
 			}
@@ -406,11 +408,18 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 	/**
 	 * @throws DocumentException
 	 */
-	private void endFile() throws DocumentException {
-		document.add(detailTable);
-		if (footerTable != null) {
-			document.add(footerTable);
-		}
+	private void endFile() {
+		try
+        {
+            document.add(detailTable);
+            if (footerTable != null) {
+            	document.add(footerTable);
+            }
+        }
+        catch (DocumentException e)
+        {
+            throw new RuntimeException("Error finishing batch report " + resource.getFilename(), e);
+        }
 		document.close();
 		detailTable = null;
 		footerTable = null;
@@ -418,7 +427,10 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
 	}
 
 	private void init() {
-        try {
+        
+	    Assert.notNull(resource, "The resource must be set");
+	    
+	    try {
             // COURIER is monospaced font
             font = new Font(Font.COURIER, fontSize, Font.NORMAL);
             document = new Document(PageSize.A4.rotate(), 20, 20, 20, 20);   
@@ -429,7 +441,7 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
         }
         catch (Exception e) {
             document = null;
-            throw new RuntimeException("Error creating batch report " + resource.getFilename(), e);
+            throw new RuntimeException("Error initializing batch report " + resource.getFilename(), e);
         }
     }
 
@@ -513,6 +525,27 @@ public class ReportPDFWriter implements ItemWriter<List<String[]>> {
      */
     public void setReportingMetaData(ReportingMetaData reportingMetaData) {
         this.reportingMetaData = reportingMetaData;
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.batch.item.ItemStream#open(org.springframework.batch.item.ExecutionContext)
+     */
+    public void open(ExecutionContext executionContext) throws ItemStreamException {
+        init();
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.batch.item.ItemStream#update(org.springframework.batch.item.ExecutionContext)
+     */
+    public void update(ExecutionContext executionContext) throws ItemStreamException {
+    
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.batch.item.ItemStream#close()
+     */
+    public void close() throws ItemStreamException {
+        endFile();
     }
 
 }
