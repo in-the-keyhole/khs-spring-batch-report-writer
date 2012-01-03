@@ -18,15 +18,24 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	<description>Example job to get you started. It provides a
 		skeleton for a typical batch reporting application.</description>
 
-	<job id="job1" xmlns="http://www.springframework.org/schema/batch">
+	<job id="timesheetJob" xmlns="http://www.springframework.org/schema/batch">
 		<step id="step1">
 			<tasklet transaction-manager="transactionManager" start-limit="100">
 				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1" />
 			</tasklet>						
 		</step>		 
 	</job>
+	
+	<job id="jobTimingJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="step2">
+			<tasklet transaction-manager="transactionManager" start-limit="100">
+				<chunk reader="jobTimingReportReader" processor="jobTimingReportProcessor" writer="jobTimingReportWriter" commit-interval="1" />
+			</tasklet>						
+		</step>		 
+	</job>
+	
 
-	<!-- Configuration for step1 -->
+	<!-- Configuration for Timesheet Job -->
 	<bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader" />     
 
 	<bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
@@ -41,7 +50,23 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
          <property name="headingWidth" value="60" />
          <property name="reportingMetaData" ref="metaData" />
 	</bean>
-     
+	
+	<!-- Configuration for Job Execution Job -->
+	<bean id="jobTimingReportReader" class="com.khs.batch.report.JobExecutionReportReader" />     
+
+    <bean id="jobTimingReportFactory" class="com.khs.batch.report.JobExecutionReportFactory" />
+ 
+     <bean id="jobTimingReportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
+         <property name="resource" value="file:/${java.io.tmpdir}/batch-job-execution-report.pdf" />  
+         <property name="width" value="60"/> 
+         <property name="headingWidth" value="60" />
+         <property name="reportingMetaData" ref="metaData" />
+	</bean>
+	
+	<bean id="jobTimingReportProcessor" class="com.khs.batch.report.ReportProcessor">  
+	   <property name="factory" ref="jobTimingReportFactory" />
+	</bean>
+	     
 	<bean id="metaData"  class="com.khs.batch.report.ReportingMetaData">
 		<property name="author" value="KHS" />
 		<property name="subject" value="PDF Reporting" />
