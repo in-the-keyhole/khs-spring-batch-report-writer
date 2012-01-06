@@ -21,7 +21,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.util.StringUtils;
 
 /**
- * @author dpitt@keyholesoftware.com
+ * @author dpitt@keyholesoftware.com Outputs report directives from processor,useful for debugging
  */
 public class ReportDirectiveWriter implements ItemWriter<List<String[]>> {
 
@@ -32,10 +32,6 @@ public class ReportDirectiveWriter implements ItemWriter<List<String[]>> {
 			for (String[] r : row) {
 
 				System.out.print(StringUtils.arrayToCommaDelimitedString(r));
-				// for (String c : r) {
-				// System.out.print(c);
-				// }
-
 				System.out.println("");
 
 			}
