@@ -1,7 +1,7 @@
 Spring Batch Report Writing Framework
 =====================================
 
-This project enables the creation of PDF line break reports using the Spring Batch FrameworkUse with Spring Batch framework
+This project enables the creation of PDF line break reports using the Spring Batch Framework.
 
 What it does
 =============
@@ -88,11 +88,11 @@ How it Works
   Frameworks Report Processor groups, totals, etc... 
   
   Writing
-  PDW Writer formats processor output into PDF file
+  PDF Writer formats processor output into PDF file
   
 Report Factory
 ==============
-A report layout is defined by extended from com.khs.batch.report.ReportFactory. 
+A report layout is defined by extending from com.khs.batch.report.ReportFactory. 
 Factories define your report layout
 An example is shown below... 
 
