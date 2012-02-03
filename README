@@ -28,7 +28,7 @@ Using Maven: add this dependency in your 'pom.xml'
 Sample job that generate PDF(s) can be found in UNIT TEST folder
 
 Features   
-=========   
+========  
   Grouping, Totaling,and Subtotaling
   Format Headings, Footings, Columns
   Implements as a Spring batch Writer 
