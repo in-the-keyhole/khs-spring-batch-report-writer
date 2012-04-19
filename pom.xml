@@ -22,9 +22,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:git@github.com:in-the-keyhole/khs-spring-batch-report-writer.git</connection>
-		<developerConnection>scm:git:git@github.com:in-the-keyhole/khs-spring-batch-report-writer.git</developerConnection>
-		<url>git://github.com/in-the-keyhole/khs-spring-batch-report-writer.git</url>
+		<connection>scm:git:file:///in-the-keyhole/khs-spring-batch-report-writer.git</connection>
+		<developerConnection>scm:git:file:///in-the-keyhole/khs-spring-batch-report-writer.git</developerConnection>
+		<url>file:///in-the-keyhole/khs-spring-batch-report-writer.git</url>
 	</scm>
 
 
