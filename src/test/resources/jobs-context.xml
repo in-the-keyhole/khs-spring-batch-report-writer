@@ -57,8 +57,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <bean id="jobTimingReportFactory" class="com.khs.batch.report.JobExecutionReportFactory" />
  
      <bean id="jobTimingReportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
-<!--          <property name="resource" value="file:/${java.io.tmpdir}/batch-job-execution-report.pdf" />   -->
-         <property name="resource" value="classpath:batch-job-execution-report.pdf" />
+         <property name="resource" value="file:/${java.io.tmpdir}/batch-job-execution-report.pdf" />  
+<!--          <property name="resource" value="classpath:batch-job-execution-report.pdf" /> -->
          <property name="width" value="60"/> 
          <property name="headingWidth" value="60" />
          <property name="reportingMetaData" ref="metaData" />
