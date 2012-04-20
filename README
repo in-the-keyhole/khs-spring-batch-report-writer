@@ -17,13 +17,15 @@ To build it clone then use Maven:
 	$ cd khs-spring-batch-report-writer
 	$ mvn install
 
-Using Maven: add this dependency in your 'pom.xml'
+Using Maven: add this dependency in your 'pom.xml' 
 
    <dependency>
-   	<groupId>com.keyholesoftware.com</groupId>
+   	<groupId>com.keyholesoftware</groupId>
    	<artifactId>khs-spring-batch-reporting</artifactId>
-   	<version>0.0.1-SNAPSHOT<version>
+   	<version>1.0<version>
    </dependency>
+   
+Note: This dependency is publicly available via NEXUS Central OSS repository   
    
 Sample job that generate PDF(s) can be found in UNIT TEST folder
 
