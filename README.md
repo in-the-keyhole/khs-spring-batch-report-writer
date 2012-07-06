@@ -1,0 +1,154 @@
+Spring Batch Report Writing Framework [![Build Status](https://secure.travis-ci.org/in-the-keyhole/khs-spring-batch-report-writer.png?branch=master)](http://travis-ci.org/in-the-keyhole/khs-spring-batch-report-writer)
+=====================================
+
+This project enables the creation of PDF line break reports using the Spring Batch Framework.
+
+What it does
+=============
+Through spring batch chunk tasklet configuration you can define a line break report and specify columns to group and total on. 
+Multiple control breaks can be defined along with header and footers. Report is output to a PDF at a specified resource 
+path.  This framework approach originated and has been used to produce financial accounting, audit and reconciliation reports. 
+
+Getting Started
+================
+To build it clone then use Maven:
+
+	$ git clone ...
+	$ cd khs-spring-batch-report-writer
+	$ mvn install
+
+Using Maven: add this dependency in your 'pom.xml' 
+
+   <dependency>
+   	<groupId>com.keyholesoftware</groupId>
+   	<artifactId>khs-spring-batch-reporting</artifactId>
+   	<version>1.0</version>
+   </dependency>
+   
+Note: This dependency is publicly available via NEXUS Central OSS repository   
+   
+Sample job that generate PDF(s) can be found in UNIT TEST folder
+
+Features   
+========  
+  Grouping, Totaling,and Subtotaling
+  Format Headings, Footings, Columns
+  Implements as a Spring batch Writer 
+  Process very large result sets
+  Outputs PDF file 
+  
+  
+Example Job report step definition 
+===============================================
+  
+    <job id="job1" xmlns="http://www.springframework.org/schema/batch">
+		<step id="step1" parent="simpleStep">
+			<tasklet>
+				<chunk reader="reportReader" processor="reportProcessor" writer="reportWriter" commit-interval="1"/>
+			</tasklet>						
+		</step>		 
+	</job>	 
+  
+  Report Reader Read - Read Timesheet Data 
+  
+    <bean id="reportReader" class="com.khs.batch.report.ExampleTimesheetReportReader" />     
+
+  Report Processor - Specify report factory (factory defines headings/columns/totals.etc)
+  
+    <bean id="reportProcessor" class="com.khs.batch.report.ReportProcessor">  
+	   <property name="factory" ref="exampleReportFactory" />
+	</bean>
+
+    <bean id="exampleReportFactory" class="com.khs.batch.report.ExampleTimesheetReportFactory" />
+  
+  PDF Writer - Define PDF attributes and report output path
+  
+    <bean id="reportWriter" class="com.khs.batch.report.ReportPDFWriter"> 
+         <property name="resource" value="file:/${java.io.tmpdir}/batch-report.pdf" />  
+         <property name="width" value="60"/> 
+         <property name="headingWidth" value="60" />
+         <property name="reportingMetaData" ref="metaData" />
+	</bean>
+	
+	<bean id="metaData"  class="com.khs.batch.report.ReportingMetaData">
+		<property name="author" value="KHS" />
+		<property name="subject" value="PDF Reporting" />
+		<property name="keywords" value="Spring, Spring Batch, PDF Report" />
+		<property name="creator" value="KHS Batch" />
+		<property name="title" value="PDF Batch Report" />
+	</bean>  
+   
+  
+How it Works
+============
+  
+  Reader
+  Report Reader turns data result into report row objects List<Data>. 
+  You implement retrieval query along with a Report Factory for report layout
+  
+  Processing
+  Frameworks Report Processor groups, totals, etc... 
+  
+  Writing
+  PDF Writer formats processor output into PDF file
+  
+Report Factory
+==============
+A report layout is defined by extending from com.khs.batch.report.ReportFactory. 
+Factories define your report layout
+An example is shown below... 
+
+
+/**
+ * Example Timesheet report format (i.e. columns,headings, footings, groupings, totaling, etc..)
+ * @author dpitt  www.keyholesoftware.com
+ *
+ */
+
+/**
+ * Example Timesheet report format (i.e. columns,headings, footings, groupings, totaling, etc..)
+ * 
+ * @author dpitt
+ */
+public class ExampleTimesheetReportFactory extends ReportFactory {
+	// column ids
+	public final static String WEEKEND = "weekend";
+	public final static String DEPARTMENT = "department";
+	public final static String EMPLOYEE = "employee";
+	public final static String HOURS = "hours";
+
+	@Override
+	// Report Header List
+	// Each element in list is a header line
+	// ~ is used to justify header text LEFT,CENTER,RIGHT
+	// # indicates page number
+	public List<String> getHeader() {
+		return Arrays.asList("Example Report", "~Example Timesheet Report~Page #");
+	}
+
+	@Override
+	// Report Columns Column definitions options...
+	// Column.New(<col id>,<col value>).group()
+	// Column.New(<col id>,<col value>).total()
+	public List<Column> getColumns() {
+		return Arrays.asList(Column.New(WEEKEND, "Weekend"), Column.New(DEPARTMENT, "Department").group(), Column.New(EMPLOYEE, "Employee"), Column.New(HOURS, "Hours").total());
+	}
+
+	@Override
+	// Report Footer List
+	// Each element in list is a header line
+	// ~ is used to justify header text LEFT,CENTER,RIGHT
+	public List<String> getFooter() {
+		return Arrays.asList("~Footer for ");
+	}
+}
+
+   
+   
+ 
+    
+   
+   
+   
+   
+ 
