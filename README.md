@@ -1,7 +1,7 @@
 Spring Batch Report Writing Framework [![Build Status](https://secure.travis-ci.org/in-the-keyhole/khs-spring-batch-report-writer.png?branch=master)](http://travis-ci.org/in-the-keyhole/khs-spring-batch-report-writer)
 =====================================
 
-This project enables the creation of PDF line break reports using the Spring Batch Framework.
+This project enables the creation of PDF line break reports using the Spring Batch Framework. This framework has been used to successfully generate numerous audit reports for a financial institution.
 
 What it does
 =============
