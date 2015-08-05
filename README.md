@@ -19,11 +19,11 @@ To build it clone then use Maven:
 
 Using Maven: add this dependency in your 'pom.xml' 
 
-   <dependency>
-   	<groupId>com.keyholesoftware</groupId>
-   	<artifactId>khs-spring-batch-reporting</artifactId>
-   	<version>1.0</version>
-   </dependency>
+     <dependency>
+       <groupId>com.keyholesoftware</groupId>
+       <artifactId>khs-spring-batch-reporting</artifactId>
+       <version>1.0</version>
+     </dependency>
    
 Note: This dependency is publicly available via NEXUS Central OSS repository   
    
